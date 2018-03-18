@@ -7,7 +7,7 @@ services:
       - '32770:3333'
     environment: []
     volumes:
-      - '/home/eduard/Project/test_kohana:/app'
+      - '/path/to/project:/app'
     links:
       - postgresql
       - gearmand
