@@ -18,7 +18,7 @@ class Task_Gearman extends Minion_Task{
     }
 
 
-    public function get_all($job)
+    public function get_all(GearmanJob $job)
     {
         Minion_CLI::write($job->workload());
         $res = $this->_author_model->get_all()->as_array();

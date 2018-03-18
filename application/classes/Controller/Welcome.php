@@ -4,11 +4,12 @@ class Controller_Welcome extends Controller {
 
 
 	private $_gearman_client = null;
-	private $_gearman_worker = null;
 
-	
+
+
 	public function before()
 	{
+
 		$this->_gearman_client = new GearmanClient();
 		$this->_gearman_client->addServer("gearmand");
 		$this->_gearman_client->setTimeout(30000);
@@ -16,27 +17,21 @@ class Controller_Welcome extends Controller {
 	}
 	public function action_index()
 	{
-		// $list = $this->_gearman_client->doNormal("authors_list","list");
-		// ob_start();
-		$client = new GearmanClient();
-		$client->addServer("gearmand");
-		$results = "";
-		$client->addTask('authors_list', "list", NULL, uniqid());
-		$task = new Task_Authors();
-		$arr = [];
-		// $client->setDataCallback([$task, 'getDataCallback']);
-		$client->setCompleteCallback(function($task) use(&$arr){
-			var_dump($task);
+
+		$client = $this->_gearman_client;
+        $task = new Task_Authors();
+        $arr = null;
+        //через обьект
+        $client->setDataCallback([$task, 'getDataCallback']);
+        //через замыкание
+        $client->setCompleteCallback(function(GearmanTask $task) use(&$arr){
 			$arr = $task->data();
-			// $this->json_string_render($results);
-			return $arr;
 		});
-		// var_dump($client->setFailCallback([$task, 'fail']));
-		$client->runTasks();
-		var_dump($client->returnCode());
-		// var_dump($task->recieve_data);
-		// ob_end_flush();  
-		$this->json_string_render(json_encode($arr));
+        $client->addTask('authors_list', "list", NULL, uniqid());
+        $client->runTasks();
+        $authors_list = $task->data;
+        $this->render_as_json($authors_list);
+		$this->json_string_render($arr);
 	}
 
 	public function action_get()
@@ -59,9 +54,8 @@ class Controller_Welcome extends Controller {
 	{
 		$id = $this->request->param('id');
 		$post_data = $this->request->post();
-		$post_data["id"] = $id; 
+		$post_data["id"] = $id;
 
-		$_gearman_client->addTask('author_update', $data);
 		$result = $this->_gearman_client-doNormal("author_update", json_encode($post_data));
 		$this->json_string_render($result);
 	}
@@ -81,6 +75,6 @@ class Controller_Welcome extends Controller {
 	}
 	private function json_string_render($val){
 		
-		$this->response->body($val);
+		$this->response->body($val)->headers("Content-Type","application/json");
 	}
 } // End Welcome

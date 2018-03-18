@@ -7,13 +7,9 @@ class Task_Authors
     public $recieve_data = [];
 
 
-    public function createdCallback($task)
-    {
-        var_dump($task->jobHandle());
-    }
+
 
     public function getDataCallback($task){
-        var_dump($task);
         $this->recieve_data[] = json_decode($task->data());
         
     }
@@ -28,7 +24,5 @@ class Task_Authors
         print("errr");
     }
 
-    function getStatus(GearmanTask $task){
-        $task->taskNumerator() / $task->taskDenominator()*(100);
-    }
+
 }
