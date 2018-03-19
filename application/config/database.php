@@ -14,7 +14,7 @@ return array
 			 * string   password    database password
 			 * boolean  persistent  use persistent connections?
 			 */
-			'dsn'        => 'pgsql:dbname=kohana;host=postgresql',
+			'dsn'        => 'pgsql:dbname=postgres;host=postgresql',
 			'username'   => 'postgres',
 			'password'   => '123qwe',
 			'persistent' => FALSE,

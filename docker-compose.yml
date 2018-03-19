@@ -7,7 +7,7 @@ services:
       - '32770:3333'
     environment: []
     volumes:
-      - '/path/to/project:/app'
+      - '.:/app'
     links:
       - postgresql
       - gearmand
